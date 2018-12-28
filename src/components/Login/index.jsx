@@ -309,14 +309,14 @@ class Login extends React.Component {
       return (
         <Dropdown item trigger={trigger} closeOnChange={false}>
           <Dropdown.Menu>
-            <Dropdown.Item icon='setting' text='Mi cuenta'/>
-            <Dropdown.Item icon='sign out' text='Cerrar sesión' onClick={this.handleLogout}/>
+            <Dropdown.Item icon='setting' text='My account'/>
+            <Dropdown.Item icon='sign out' text='Log out' onClick={this.handleLogout}/>
           </Dropdown.Menu>
         </Dropdown>
       );
     } else {
       return (
-        <Dropdown item text='Ingresar' closeOnChange={false}>
+        <Dropdown item text='Sign up/Login' closeOnChange={false}>
           <Dropdown.Menu>
             <Form onSubmit={this.handleEmailLogin} style={{minWidth: '15rem', margin: '11px 11px 0px'}} hidden={this.state.loginHidden}>
               <Form.Input
@@ -335,34 +335,34 @@ class Login extends React.Component {
                 iconPosition='left'
                 type='password'
                 name='password'
-                placeholder='Contraseña'
+                placeholder='Password'
                 value={password}
                 onClick={e => e.stopPropagation()}
                 onBlur={e => e.stopPropagation()}
                 onChange={this.handleChange}
               />
               <Form.Button fluid onBlur={e => e.stopPropagation()}>
-                <Icon name='sign in'/> Ingresar
+                <Icon name='sign in'/> Login
               </Form.Button>
             </Form>
             <div className='message' style={{textAlign: 'center', paddingBottom: 0}} hidden={this.state.loginHidden}>
-              <a href='javascript:' onBlur={e => e.stopPropagation()} onClick={this.toggleReset}>¿Olvidaste tu contraseña?</a>
+              <a href='javascript:' onBlur={e => e.stopPropagation()} onClick={this.toggleReset}>Forgot your password?</a>
             </div>
             <div hidden={this.state.loginHidden}>
-              <Divider horizontal style={{border: 'none'}}>O</Divider>
+              <Divider horizontal style={{border: 'none'}}>Or</Divider>
             </div>
             <Form onSubmit={this.handleFacebookLogin} style={{minWidth: '15rem', margin: '0px 11px 11px'}} hidden={this.state.loginHidden}>
               <Form.Button fluid color='facebook' onBlur={e => e.stopPropagation()}>
-                <Icon name='facebook' /> Ingresa con Facebook
+                <Icon name='facebook' /> Continue with Facebook
               </Form.Button>
             </Form>
             <Form onSubmit={this.handleGoogleLogin} style={{minWidth: '15rem', margin: '0px 11px'}} hidden={this.state.loginHidden}>
               <Form.Button fluid color='google plus' onBlur={e => e.stopPropagation()}>
-                <Icon name='google' /> Ingresa con Google
+                <Icon name='google' /> Continue with Google
               </Form.Button>
             </Form>
             <div className='message' style={{textAlign: 'center'}} hidden={this.state.loginHidden}>
-              ¿No tienes cuenta? <a href='javascript:' onBlur={e => e.stopPropagation()} onClick={this.toggleSignup}>¡Regístrate!</a>
+              Don't have an account? <a href='javascript:' onBlur={e => e.stopPropagation()} onClick={this.toggleSignup}>Sign up!</a>
             </div>
             <Form onSubmit={this.handleEmailSignup} style={{minWidth: '15rem', margin: '11px 11px 0px'}} hidden={this.state.signupHidden}>
               <Form.Input
@@ -381,18 +381,18 @@ class Login extends React.Component {
                 iconPosition='left'
                 type='password'
                 name='password'
-                placeholder='Contraseña'
+                placeholder='Password'
                 value={password}
                 onClick={e => e.stopPropagation()}
                 onBlur={e => e.stopPropagation()}
                 onChange={this.handleChange}
               />
               <Form.Button fluid onBlur={e => e.stopPropagation()}>
-                <Icon name='sign in'/> Regístrate
+                <Icon name='sign in'/> Sign up
               </Form.Button>
             </Form>
             <div className='message' style={{textAlign: 'center'}} hidden={this.state.signupHidden}>
-              <a href='javascript:' onBlur={e => e.stopPropagation()} onClick={this.toggleLogin}>Regresar</a>
+              <a href='javascript:' onBlur={e => e.stopPropagation()} onClick={this.toggleLogin}>Back</a>
             </div>
             <Form onSubmit={this.handleResetPassword} style={{minWidth: '15rem', margin: '11px 11px 0px'}} hidden={this.state.resetHidden}>
               <Form.Input
@@ -407,11 +407,11 @@ class Login extends React.Component {
                 onChange={this.handleChange}
               />
               <Form.Button fluid onBlur={e => e.stopPropagation()}>
-                <Icon name='send'/> Enviar
+                <Icon name='send'/> Send
               </Form.Button>
             </Form>
             <div className='message' style={{textAlign: 'center'}} hidden={this.state.resetHidden}>
-              <a href='javascript:' onBlur={e => e.stopPropagation()} onClick={this.toggleLogin}>Regresar</a>
+              <a href='javascript:' onBlur={e => e.stopPropagation()} onClick={this.toggleLogin}>Back</a>
             </div>
           </Dropdown.Menu>
         </Dropdown>

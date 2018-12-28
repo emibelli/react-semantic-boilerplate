@@ -38,7 +38,7 @@ class App extends React.Component {
   }
 
   content() {
-    return(
+    return (
       <div style={{padding: '5em 0 0', flex: 1, textAlign: 'center', justifyContent: 'center', alignItems: 'center'}}>
         <p>Edit <code>src/components/App/index.jsx</code> and save to reload.</p>
         <a href="https://reactjs.org" target="_blank" rel="noopener noreferrer">Learn React</a>
