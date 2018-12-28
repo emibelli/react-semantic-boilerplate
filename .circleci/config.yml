@@ -1,0 +1,137 @@
+version: 2
+
+jobs:
+  build:
+    docker:
+      - image: circleci/node:8.10
+    environment:
+      CI: false # Remove this environment variable to enable ESLint warning checks during build process
+    working_directory: ~/app
+    steps:
+      - checkout
+      - save_cache:
+          name: Saving code to cache
+          paths:
+            - ~/app
+          key: repo-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_WORKFLOW_ID }}
+      - run:
+          name: Installing dependencies
+          command: npm install
+      - save_cache:
+          name: Saving dependencies to cache
+          paths:
+            - node_modules
+          key: node_modules-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_WORKFLOW_ID }}
+      - run:
+          name: Configuring environment variables and building React app
+          command:  |
+                    touch .env
+                    if [[ "$CIRCLE_BRANCH" == "production" ]] ; then
+                      export NODE_ENV=production
+                      echo "PUBLIC_URL=${PUBLIC_URL_PROD}" >> .env
+                      echo "REACT_APP_FIREBASE_API_KEY=${FIREBASE_API_KEY_PROD}" >> .env
+                      echo "REACT_APP_FIREBASE_AUTH_DOMAIN=${FIREBASE_AUTH_DOMAIN_PROD}" >> .env
+                      echo "REACT_APP_FIREBASE_DATABASE_URL=${FIREBASE_DATABASE_URL_PROD}" >> .env
+                      echo "REACT_APP_FIREBASE_PROJECT_ID=${FIREBASE_PROJECT_ID_PROD}" >> .env
+                      echo "REACT_APP_FIREBASE_STORAGE_BUCKET=${FIREBASE_STORAGE_BUCKET_PROD}" >> .env
+                      echo "REACT_APP_FIREBASE_MESSAGING_SENDER_ID=${FIREBASE_MESSAGING_SENDER_ID_PROD}" >> .env
+                    else
+                      export NODE_ENV=development
+                      echo "PUBLIC_URL=${PUBLIC_URL_DEV}" >> .env
+                      echo "REACT_APP_FIREBASE_API_KEY=${FIREBASE_API_KEY_DEV}" >> .env
+                      echo "REACT_APP_FIREBASE_AUTH_DOMAIN=${FIREBASE_AUTH_DOMAIN_DEV}" >> .env
+                      echo "REACT_APP_FIREBASE_DATABASE_URL=${FIREBASE_DATABASE_URL_DEV}" >> .env
+                      echo "REACT_APP_FIREBASE_PROJECT_ID=${FIREBASE_PROJECT_ID_DEV}" >> .env
+                      echo "REACT_APP_FIREBASE_STORAGE_BUCKET=${FIREBASE_STORAGE_BUCKET_DEV}" >> .env
+                      echo "REACT_APP_FIREBASE_MESSAGING_SENDER_ID=${FIREBASE_MESSAGING_SENDER_ID_DEV}" >> .env
+                    fi
+                    npm run build
+      - save_cache:
+          name: Saving build artifacts to cache
+          paths:
+            - build
+          key: build-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_WORKFLOW_ID }}
+
+  test:
+    docker:
+      - image: circleci/node:8.10
+    working_directory: ~/app
+    steps:
+      - restore_cache:
+          name: Restoring code from cache
+          key: repo-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_WORKFLOW_ID }}
+      - restore_cache:
+          name: Restoring dependencies from cache
+          key: node_modules-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_WORKFLOW_ID }}
+      - run:
+          name: Mocking test command
+          command: echo "Tests passed!"
+      # ==================================================
+      # Run your test commands here
+      # ==================================================
+      #- run:
+      #    name: Running tests
+      #    command: npm test
+
+  deploy:
+    docker:
+      - image: circleci/node:8.10
+    working_directory: ~/app
+    steps:
+      - restore_cache:
+          name: Restoring code from cache
+          key: repo-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_WORKFLOW_ID }}
+      - restore_cache:
+          name: Restoring dependencies from cache
+          key: node_modules-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_WORKFLOW_ID }}
+      - restore_cache:
+          name: Restoring build artifacts from cache
+          key: build-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_WORKFLOW_ID }}
+      - run:
+          name: Mocking deploy command
+          command: echo "App deployed!"
+      # ==================================================
+      # Uncomment to deploy to AWS S3
+      # ==================================================
+      #- run:
+      #    name: Installing Python
+      #    command: sudo apt-get install python-dev
+      #- run:
+      #    name: Installing Python Package Manager (PIP)
+      #    command: sudo apt-get install python-pip
+      #- run:
+      #    name: Installing AWS CLI
+      #    command: sudo pip install awscli
+      #- run:
+      #    name: Deploying to AWS S3
+      #    command:  |
+      #              cd build
+      #              if [[ "$CIRCLE_BRANCH" == "production" ]] ; then
+      #                export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID_PROD
+      #                export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY_PROD
+      #                aws s3 rm s3://$AWS_S3_BUCKET_PROD/ --recursive
+      #                aws s3 cp . s3://$AWS_S3_BUCKET_PROD/ --recursive --acl public-read --exclude *.map
+      #              elif [[ "$CIRCLE_BRANCH" == "master" ]] ; then
+      #                export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID_DEV
+      #                export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY_DEV
+      #                aws s3 rm s3://$AWS_S3_BUCKET_DEV/ --recursive
+      #                aws s3 cp . s3://$AWS_S3_BUCKET_DEV/ --recursive --acl public-read
+      #              fi
+
+workflows:
+  version: 2
+  build-test-deploy:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build
+      - deploy:
+          requires:
+            - build
+            - test
+          filters:
+            branches:
+              only:
+                - master
+                - production

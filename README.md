@@ -1,3 +1,6 @@
+# react-semantic-boilerplate
+A boilerplate web app using React and Semantic UI
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
