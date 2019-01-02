@@ -12,8 +12,8 @@ const NotFound = () => (
   <div>
     <Container text textAlign='center' style={{padding: '5em 0 0'}}>
       <Header as='h1'>404</Header>
-      <p>¡Ups! La página no existe</p>
-      <p>Lo sentimos, pero la página que estás buscando no existe.</p>
+      <p>¡Oops! Page not found</p>
+      <p>Sorry, we couldn't find the page you're looking for.</p>
     </Container>
   </div>
 );
